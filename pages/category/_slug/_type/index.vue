@@ -2,14 +2,14 @@
    <v-container fluid>
       <div class="mb-6">
          <div class="d-flex justify-space-between align-center mt-5 mb-8">
-            <p class="text-h6 mb-0">{{ category.name }}</p>
+            <p class="text-h6 mb-0">{{ category.name }}: {{ type.name }}</p>
             <v-breadcrumbs
                :items="breadcrumb"
                class="px-0 py-2"
             >
                <template #item="{item}">
                   <v-breadcrumbs-item
-                     nuxt
+                     exact
                      :to="item.href"
                      :disabled="item.disabled"
                   >{{ item.text }}</v-breadcrumbs-item>
@@ -20,7 +20,7 @@
             <v-col cols="12">
                <v-card flat>
                   <v-card-title class="text-subtitle-1">
-                     Data {{ category.name }} Sekolah Binaan
+                     Data {{ type.name }} Sekolah Binaan
                   </v-card-title>
                   <v-card-text>
                      <data-table
@@ -37,11 +37,10 @@
                   </v-card-text>
                </v-card>
             </v-col>
-
             <v-col cols="12">
                <v-card flat>
                   <v-card-title class="text-subtitle-1">
-                     Tipe Data Kategori {{ category.name }}
+                     Tipe Data Kategori {{ category.name }} Lainnya
                   </v-card-title>
                   <v-card-text>
                      <v-row dense>
@@ -56,7 +55,7 @@
                               outlined
                               class="v-btn text-capitalize"
                               router
-                              :to="{name: 'category-slug-type', params: { slug: category.slug, type: item.slug }}"
+                              :to="{ name: 'category-slug-type', params: {slug: category.slug, type: item.slug }}"
                               exact
                            >
                               <v-card-text>{{ item.name }}</v-card-text>
@@ -66,9 +65,8 @@
                   </v-card-text>
                </v-card>
             </v-col>
-
             <v-col cols="12">
-               <v-card flat>
+               <v-card dense>
                   <v-card-title class="text-subtitle-1">
                      Kategori Lainnya
                   </v-card-title>
@@ -85,7 +83,7 @@
                               outlined
                               class="v-btn text-capitalize"
                               router
-                              :to="{name: 'category-slug', params: { slug: item.slug }}"
+                              :to="{name: 'category-slug', params: {slug: item.slug}}"
                               exact
                            >
                               <v-card-text>{{ item.name }}</v-card-text>
@@ -110,9 +108,11 @@ export default {
    
    data() {
       return {
+         type: [],
          dataTypes: [],
          category: [],
          categories: [],
+
          headers: [
             {
                text: 'ID',
@@ -155,25 +155,20 @@ export default {
       breadcrumb() {
          const data = [
             {text: 'Dashboard', disabled: false, href: '/'},
-            {text: this.category.name ?? '', disabled: true, href: `/category/${this.category.slug}`}
+            {text: this.category.name ?? '', disabled: false, href: `/category/${this.category.slug}`},
+            {text: this.type.name ?? '', disabled: true, href: `/category/${this.category.slug}/${this.type.slug}`}
          ]
          return data
       }
    },
 
    async mounted() {
-      await this.$axios.get(`/getDataTypes`, {
-         params: {
-            slug: this.$route.params.slug
-         }
-      }).then((resp) => { this.dataTypes = resp.data.data })
-
-      await this.$axios.get(`/getCategories`).then((resp) => {
+      await this.$axios.get('/getCategories').then((resp) => {
          let category = null
          const categories = []
          const slug = this.$route.params.slug
 
-         resp.data.data.forEach(function(item, index) {
+         resp.data.data.forEach(function(item) {
             if (item.slug === slug) {
                category = item
             } else {
@@ -185,19 +180,38 @@ export default {
          this.categories = categories
       })
 
+      await this.$axios.get(`/getDataTypes`, {
+         params: {
+            slug: this.$route.params.slug
+         }
+      }).then((resp) => {
+         const dataTypes = []
+         let dataType = null
+         const type = this.$route.params.type
+
+         resp.data.data.forEach(function(item) {
+            if (item.slug !== type) {
+               dataTypes.push(item)
+            } else {
+               dataType = item
+            }
+         })
+
+         this.type = dataType
+         this.dataTypes = dataTypes
+      })
+
       this.dataHandler()
    },
 
    methods: {
-      dataHandler(current, statusId, schoolId, dataTypeId) {
+      dataHandler(current, statusId) {
          this.loading = true
          this.$axios.get(`/supervisor/getData/${this.$auth.user.id}`, {
             params: {
                page: current,
                status: statusId,
-               school: schoolId,
-               category: this.category.id,
-               data_type: this.category.id ? dataTypeId : null,
+               data_type: this.type.id
             }
          }).then((resp) => {
             this.data = resp.data.data
@@ -207,3 +221,7 @@ export default {
    }
 }
 </script>
+
+<style>
+
+</style>

@@ -48,7 +48,7 @@
          ></v-select>
       </v-col>
 
-      <v-col cols="6" md="2">
+      <!-- <v-col cols="6" md="2">
          <v-select
             v-model="categoryId"
             :items="categories"
@@ -74,7 +74,7 @@
             class="pt-0 mt-0"
             @input="dataHandler()"
          ></v-select>
-      </v-col>
+      </v-col> -->
       <!-- <v-btn
          color="primary"
          @click.stop="dialog()"
@@ -130,6 +130,7 @@
                <v-btn
                   v-bind="attrs"
                   icon
+                  :disabled="(item.data_status_id === 2) ? true : false"
                   class="me-2"
                   color="green darken-2"
                   v-on="on"
@@ -146,6 +147,7 @@
                <v-btn
                   v-bind="attrs"
                   icon
+                  :disabled="(item.data_status_id === 2 || item.data_status_id === 3) ? true : false"
                   class="me-2"
                   color="deep-orange darken-1"
                   v-on="on"
@@ -177,7 +179,7 @@
    </div>
    <!-- //!SECTION -->
 
-   <!-- //SECTION - Delete Dialog -->
+   <!-- //SECTION - Dialog -->
    <v-dialog
       v-model="dialogTrigger"
       max-width="500px"
@@ -197,7 +199,18 @@
       <v-card v-else-if="isRevision">
          <v-card-title>Kembalikan data untuk direvisi?</v-card-title>
          <v-card-text>
-            Anda yakin ingin mengembalikan data <code>{{ targetItem.id }}</code> untuk direvisi?
+            <p>Anda yakin ingin mengembalikan data <code>{{ targetItem.id }}</code> untuk direvisi?</p>
+            <v-form
+               ref="revisionNotesText"
+               @submit.prevent
+            >
+               <v-textarea
+                  v-model="revisionNotes"
+                  auto-grow
+                  label="Catatan Revisi"
+                  :rules="textareaRules"
+               ></v-textarea>
+            </v-form>
          </v-card-text>
          <v-card-text class="d-flex justify-end">
             <v-btn class="me-2" text @click="closeDialog">Batal</v-btn>
@@ -295,6 +308,7 @@ export default {
          dialogTrigger: false,
          isVerify: false,
          isRevision: false,
+         revisionNotes: '',
 
          targetItem: [],
          dialogTitle: '',
@@ -312,6 +326,10 @@ export default {
       //    const data = this.getDataTypes(category)
       //    return data
       // }
+
+      textareaRules() {
+         return [v => !!v || 'Wajib diisi']
+      }
    },
    
    // SECTION - Watch
@@ -397,6 +415,12 @@ export default {
          if (status === 4) return "cyan lighten-1 white--text"
       },
 
+      getFileExtension(name) {
+         const fileName = name
+         const extension = fileName.substring(fileName.lastIndexOf('.'), fileName.length)
+         return extension
+      },
+
       async downloadFile(item) {
          const fileExtension = this.getFileExtension(item.path)
          const filename = item.school.name + '_' + item.category + '_' + item.data_type.name + '_' + item.year + fileExtension
@@ -443,6 +467,7 @@ export default {
       closeDialog() {
          this.dialogTrigger = false
          this.targetItem = []
+         this.revisionNotes = ''
          this.isVerify = false
          this.isRevision = false
       },
@@ -462,18 +487,35 @@ export default {
       },
 
       async revisionData() {
-         await this.$axios.post(`/supervisor/revisionData`, this.targetItem)
-         this.onTriggeredAlert()
-         this.alertType = 'success'
-         this.alertColor = 'deep-orange darken-1'
-         this.alertIcon = 'mdi-alert'
-         this.alertMessage = `Data dengan ID <code>${this.targetItem.id}</code> berhasil dikembalikan untuk direvisi`
-         document.getElementById('alertMessage').innerHTML = this.alertMessage
-         this.alertTrigger = true
-
-         this.closeDialog()
-         this.dataHandler()
+         if (this.$refs.revisionNotesText.validate()) {
+            this.targetItem.revision_notes = this.revisionNotes
+            await this.$axios.post(`/supervisor/revisionData`, this.targetItem)
+            this.onTriggeredAlert()
+            this.alertType = 'success'
+            this.alertColor = 'deep-orange darken-1'
+            this.alertIcon = 'mdi-alert'
+            this.alertMessage = `Data dengan ID <code>${this.targetItem.id}</code> berhasil dikembalikan untuk direvisi`
+            document.getElementById('alertMessage').innerHTML = this.alertMessage
+            this.alertTrigger = true
+   
+            this.closeDialog()
+            this.dataHandler()
+         }
       }
    }
 }
 </script>
+
+<style>
+.v-pagination__navigation {
+   transition: 0.3s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.v-pagination__navigation, .v-pagination__item {
+   box-shadow: none!important;
+}
+
+.v-pagination__navigation:hover, .v-pagination__item:hover:not(.v-pagination__item--active) {
+   background-color: #eeeeee!important;
+}
+</style>

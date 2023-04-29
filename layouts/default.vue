@@ -1,108 +1,114 @@
 <template>
-  <v-app>
+  <v-app class="v-app">
     <v-navigation-drawer
       v-if="isAuth"
-      v-model="drawer"
-      class="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      fixed
+      clipped
       app
     >
-    <div class="h-100 d-flex flex-column justify-space-between">
-      <v-list dense>
-        <template v-for="(item, i) in items">
-          <template v-if="item.child">
-              <v-list-group
-                :key="item.title"
-                :append-icon="submenuIcon"
-              >
-                <template #activator>
-                  <v-list-item-icon @click="miniVariant = false">
-                    <v-icon>{{ item.icon }}</v-icon>
-                  </v-list-item-icon>
+      <v-list dense nav>
+        <v-list-item-group active-class="primary--text">
+          <template v-for="(item, i) in items">
+            <template v-if="item.child">
+                <v-list-group
+                  :key="item.title"
+                  :append-icon="submenuIcon"
+                >
+                  <template #activator>
+                    <!-- <v-list-item> -->
+                      <v-list-item-icon>
+                        <v-icon>{{ item.icon }}</v-icon>
+                      </v-list-item-icon>
+                        <v-list-item-content>
+                          <v-list-item-title>
+                            {{ item.title }}
+                          </v-list-item-title>
+                        </v-list-item-content>
+                    <!-- </v-list-item> -->
+                  </template>
+                  <template v-for="(child, j) in item.child">
+                      <v-list-item :key="j" :to="{name: 'category-slug', params: {slug: child.to}}" router exact>
+                        <v-list-item-icon></v-list-item-icon>
+                        <v-list-item-content>
+                          <v-list-item-title>{{ child.title }}</v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                  </template>
+                </v-list-group>
+            </template>
+
+              <template v-else>
+                  <v-list-item
+                    :key="i"
+                    :to="item.to"
+                    router exact
+                  >
+                    <v-list-item-icon>
+                      <v-icon>{{ item.icon }}</v-icon>
+                    </v-list-item-icon>
                     <v-list-item-content>
-                      <v-list-item-title>
-                        {{ item.title }}
-                      </v-list-item-title>
+                      <v-list-item-title>{{ item.title }}</v-list-item-title>
                     </v-list-item-content>
-                </template>
-                <template v-for="(child, j) in item.child">
-                    <v-list-item :key="j" :to="{name: 'category-slug', params: {slug: child.to}}" router exact>
-                      <v-list-item-icon></v-list-item-icon>
-                      <v-list-item-content>
-                        <v-list-item-title>{{ child.title }}</v-list-item-title>
-                      </v-list-item-content>
-                    </v-list-item>
-                </template>
-              </v-list-group>
+                  </v-list-item>
+              </template>
+            
           </template>
 
-            <template v-else>
-                <v-list-item
-                  :key="i"
-                  :to="item.to"
-                  router exact
-                >
-                  <v-list-item-icon>
-                    <v-icon>{{ item.icon }}</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title>{{ item.title }}</v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-            </template>
-          
-        </template>
-        <v-list-item
-        to="/students"
-        router
-        exact
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-account-school</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>Data Statistik Siswa</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+          <v-list-item
+            to="/schools"
+            router
+            exact
+          >
+            <v-list-item-icon>
+              <v-icon>mdi-school</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Statistik Sekolah Binaan</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
 
-        <v-list-item
-        to="/teachers"
-        router
-        exact
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-human-male-board</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>Data Statistik Guru</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-
+        </v-list-item-group>
       </v-list>
 
-      <v-menu offset-y top>
+    </v-navigation-drawer>
+
+    <v-app-bar
+      v-if="isAuth"
+      app
+      outlined
+      flat
+      dark
+      clipped-left
+      class="app-bar"
+    >
+      <v-list dense class="pa-0" color="transparent">
+        <!-- <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title class="text-h6">diknas-online-pengawas</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item> -->
+        <v-toolbar-title class="text-h6">diknas-online-pengawas</v-toolbar-title>
+      </v-list>
+      <v-spacer/>
+      <v-menu offset-y>
         <template #activator="{on, attrs}">
-          <v-list dense>
-            <v-list-item v-bind="attrs" v-on="on">
-              <v-list-item-icon>
-                <v-icon>mdi-account-circle</v-icon>
-              </v-list-item-icon>
+          <v-list nav dense class="pa-0" color="transparent">
+            <v-list-item
+              v-bind="attrs"
+              class="d-flex flex-basis-0 flex-shrink-1 flex-grow-0"
+              v-on="on"
+            >
+              <v-list-item-avatar>
+                  <v-img
+                    src="https://api.dicebear.com/6.x/adventurer-neutral/svg?randomizeIds=true"
+                  ></v-img>
+              </v-list-item-avatar>
               <v-list-item-content>
-                <v-list-item-title>{{ user.name }}</v-list-item-title>
+                <v-list-item-title>{{ $auth.user.name ?? '' }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list>
         </template>
         <v-list>
-          <v-list-item
-            @click.stop="logout"
-          >
-            <v-list-item-title class="red--text">Keluar</v-list-item-title>
-          </v-list-item>
-          <v-divider></v-divider>
           <v-list-item
             to="/profile"
             router exact
@@ -111,26 +117,19 @@
               Profil
             </v-list-item-title>
           </v-list-item>
+
+          <v-divider></v-divider>
+
+          <v-list-item
+            @click.stop="logout"
+          >
+            <v-list-item-title class="red--text">Keluar</v-list-item-title>
+          </v-list-item>
         </v-list>
       </v-menu>
-    </div>
-  
-    </v-navigation-drawer>
-
-    <v-app-bar
-      v-if="isAuth"
-      :clipped-left="clipped"
-      fixed
-      app
-      flat
-    >
-      <v-app-bar-nav-icon class="d-none d-lg-block" @click.stop="miniVariant = !miniVariant" />
-      <v-app-bar-nav-icon class="d-block d-lg-none" @click.stop="drawer = !drawer" />
-      <v-toolbar-title>{{ title }}</v-toolbar-title>
-      <v-spacer />
     </v-app-bar>
     
-    <v-main>
+    <v-main id="main">
       <Nuxt/>
     </v-main>
   </v-app>
@@ -144,9 +143,6 @@ export default {
   
   data() {
     return {
-      clipped: true,
-      drawer: false,
-
       user: {name: ''},
       
       items: [
@@ -164,10 +160,6 @@ export default {
         },
       ],
       categories: [],
-      miniVariant: true,
-      right: true,
-      rightDrawer: false,
-      title: 'SIPADI',
       submenuIcon: 'mdi-chevron-down'
     }
   },
@@ -175,35 +167,22 @@ export default {
   computed: {
     ...mapState(['isAuth']),
 
-    dListGroup() {
-      let display = ''
-      if (this.miniVariant === false) {
-        display = 'd-none'
-      }
-      return display
-    },
   },
 
-  created() {
-    if (process.browser < 960) {
-      this.miniVariant = false
-    } else {
-      this.drawer = false
+  watch: {
+    isAuth() {
+      if (this.isAuth) {
+        this.fetchCategories()
+        this.user = this.$auth.user
+      }
     }
   },
   
   mounted() {
-    if (window.innerWidth < 960) {
-      this.miniVariant = false
-    } else {
-      this.drawer = false
-    }
-
     if (this.isAuth) {
       this.fetchCategories()
       this.user = this.$auth.user
     }
-
   }, 
 
   methods: {
@@ -240,4 +219,35 @@ export default {
 .h-100 {
   height: 100%;
 }
+
+.v-app {
+  background-color: #f5f5f5;
+}
+
+.router-active {
+  background-color: #2e455b;
+  color: white;
+  caret-color: #2e455b;
+}
+
+.flex-basis-0 {
+  flex-basis: 0%;
+}
+
+.app-bar {
+  background-color: #536DFE!important;
+}
+
+/* .v-toolbar__content {
+  border-bottom: 1px solid black;
+} */
+
+/* .theme--dark.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled), .v-list-item:not(.v-list-item--active) .v-list-item__content, .v-list-item:not(.v-list-item--active) .v-list-item__icon .v-icon {
+  color: #3964ae!important;
+} */
+
+/* .active-class {
+  background-color: #3964ae;
+  color: white!important;
+} */
 </style>
