@@ -365,11 +365,11 @@ export default {
          this.schools = resp.data.data
       })
 
-      await this.$axios.get('/getCategories').then((resp) => {
-         this.categories = resp.data.data
-      })
+      // await this.$axios.get('/getCategories').then((resp) => {
+      //    this.categories = resp.data.data
+      // })
 
-      this.getDataTypes(this.categoryId)
+      // this.getDataTypes(this.categoryId)
    },
 
    methods: {

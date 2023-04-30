@@ -60,10 +60,6 @@ export default {
             }
          }).then((resp) => {
             this.SET_IS_AUTH(true)
-            this.$auth.setUser({
-               nip: this.nip,
-               password: this.password,
-            })
             this.$router.push('/')
          }).catch((error) => { return error })
       },
