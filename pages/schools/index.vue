@@ -12,6 +12,23 @@
                   Data Statistik Sekolah Binaan
                </v-card-title>
                <v-card-text>
+                  <div class="d-flex align-center">
+                     <div class="me-2">
+                        <p class="mb-0 text-subtitle-2">Filter:</p>
+                     </div>
+                     <v-col cols="6" md="2">
+                        <v-select
+                           v-model="year"
+                           :items="yearList"
+                           item-text="year"
+                           item-value="year"
+                           label="Tahun ajaran"
+                           hide-details="auto"
+                           class="pt-0 mt-0"
+                           @input="getSchools(year)"
+                        ></v-select>
+                     </v-col>
+                  </div>
                   <schools-table
                      :headers="headers"
                      :items="data.data"
@@ -64,6 +81,8 @@ export default {
          ],
          data: [],
          loading: false,
+         year: null,
+         yearList: []
       }
    },
 
@@ -82,12 +101,17 @@ export default {
 
    async mounted() {
       await this.getSchools()
+      await this.getYearList()
    },
 
    methods: {
-      async getSchools() {
+      async getSchools(year) {
          this.loading = true
-         await this.$axios.get(`/supervisor/getPaginatedSchoolBySupervisor/${this.user.id}`).then((resp) => {
+         await this.$axios.get(`/supervisor/getPaginatedSchoolBySupervisor/${this.$auth.user.id}`, {
+            params: {
+               year: year ?? ''
+            }
+         }).then((resp) => {
             this.data = resp.data.data
          }).catch((e) => {
             this.$store.dispatch('setAlert', {
@@ -99,6 +123,13 @@ export default {
             this.$store.dispatch('showAlert')
          }).finally(() => {
             this.loading = false
+         })
+      },
+
+      async getYearList() {
+         await this.$axios.get(`/supervisor/getStudentsYear/${this.$auth.user.id}`).then((resp) => {
+            this.yearList = resp.data.data
+            this.year = this.yearList[0]
          })
       }
    }
