@@ -102,7 +102,7 @@
                   </v-row>
                </v-tab-item>
 
-               <v-tab-item class="py px-1">
+               <v-tab-item class="py-4 px-1">
                   <v-data-table
                      :headers="teacherHeaders"
                      :items="teacherItems"
@@ -112,7 +112,7 @@
                   <template #item.subject="{ item }">
                      {{ (item.subject === 'math') ? 'Matematika' 
                      : (item.subject === 'ind_lit') ? 'Bahasa Indonesia' 
-                     : (item.subject === 'eng_lit') ? 'Bahsa Inggris' 
+                     : (item.subject === 'eng_lit') ? 'Bahasa Inggris' 
                      : (item.subject === 'science') ? 'Ilmu Pengetahuan Alam' 
                      : (item.subject === 'social') ? 'Ilmu Pengetahuan Sosial' 
                      :(item.subject === 'civic') ? 'Pendidikan Kewarganegaraan' 
