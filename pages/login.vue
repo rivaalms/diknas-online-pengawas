@@ -42,7 +42,7 @@
                contain
                src="/Metrics-pana.svg"
             ></v-img>
-            <p class="text-caption ma-0 align-self-end">Illustration by <a href="https://storyset.com">Storyset</a></p>
+            <p class="text-caption ma-0 align-self-end">Illustration by <a href="https://storyset.com" target="_blank">Storyset</a></p>
          </v-col>
       </v-row>
    </div>
@@ -104,10 +104,6 @@ export default {
    justify-content: center;
    align-items: stretch;
 }
-
-/* .row {
-   height: inherit!important;
-} */
 
 .bg-primary {
    background-color: #26A69A;

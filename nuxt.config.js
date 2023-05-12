@@ -3,7 +3,7 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - diknas-online-pengawas',
+    titleTemplate: '%s | diknas-online-pengawas',
     title: 'diknas-online-pengawas',
     htmlAttrs: {
       lang: 'id',
@@ -51,9 +51,6 @@ export default {
   auth: {
     strategies: {
       local: {
-        // cookie: {
-        //   name: 'supervisor',
-        // },
         endpoints: {
           login: { url: '/supervisor/login', method: 'post', propertyName: 'data' },
           logout: { url: '/supervisor/logout', method: 'post' },
@@ -65,8 +62,6 @@ export default {
           required: true,
           type: 'Bearer'
         },
-        // tokenRequired: true,
-        // tokenType: 'Bearer '
       }
     },
     redirect: {

@@ -1,20 +1,9 @@
 <template>
    <v-container fluid>
-      <div class="mb-6">
+      <div>
          <div class="d-flex justify-space-between align-center mt-5 mb-8">
             <p class="text-h6 mb-0">{{ category.name }}: {{ type.name }}</p>
-            <v-breadcrumbs
-               :items="breadcrumb"
-               class="px-0 py-2"
-            >
-               <template #item="{item}">
-                  <v-breadcrumbs-item
-                     exact
-                     :to="item.href"
-                     :disabled="item.disabled"
-                  >{{ item.text }}</v-breadcrumbs-item>
-               </template>
-            </v-breadcrumbs>
+            <app-breadcrumb/>
          </div>
          <v-row dense>
             <v-col cols="12">
@@ -66,7 +55,7 @@
                </v-card>
             </v-col>
             <v-col cols="12">
-               <v-card dense>
+               <v-card flat>
                   <v-card-title class="text-subtitle-1">
                      Kategori Lainnya
                   </v-card-title>
@@ -99,66 +88,21 @@
 </template>
 
 <script>
-import dataTable from '@/pages/components/table'
-
 export default {
-   components: {
-      dataTable
-   },
-   
    data() {
       return {
          type: [],
          dataTypes: [],
          category: [],
          categories: [],
-
-         headers: [
-            {
-               text: 'ID',
-               value: 'id'
-            },
-            {
-               text: 'Nama Sekolah',
-               value: 'school.name'
-            },
-            {
-               text: 'Tipe data',
-               value: 'data_type.name'
-            },
-            {
-               text: 'Kategori',
-               sortable: false,
-               value: 'data_category.name'
-            },
-            {
-               text: 'Tahun ajaran',
-               value: 'year'
-            },
-            {
-               text: 'Status',
-               sortable: false,
-               value: 'data_status.name'
-            },
-            {
-               text: 'Aksi',
-               sortable: false,
-               value: 'actions'
-            }
-         ],
          data: [],
          loading: true,
       }
    },
 
-   computed: {
-      breadcrumb() {
-         const data = [
-            {text: 'Dashboard', disabled: false, href: '/'},
-            {text: this.category.name ?? '', disabled: false, href: `/category/${this.category.slug}`},
-            {text: this.type.name ?? '', disabled: true, href: `/category/${this.category.slug}/${this.type.slug}`}
-         ]
-         return data
+   head() {
+      return {
+         title: this.type ? this.type.name : 'Tipe Data'
       }
    },
 
@@ -200,6 +144,12 @@ export default {
          this.type = dataType
          this.dataTypes = dataTypes
       })
+
+      this.$store.dispatch('setBreadcrumb', [
+         { text: 'Dashboard', disabled: false, href: '/' },
+         { text: this.category.name, disabled: false, href: `/category/${this.category.slug}`},
+         { text: this.type.name, disabled: true, href: `/category/${this.category.slug}/${this.type.slug}` }
+      ])
 
       this.dataHandler()
    },

@@ -3,18 +3,7 @@
    <div class="mb-6">
       <div class="d-flex justify-space-between align-center mt-5 mb-8">
          <p class="text-h6 mb-0">Statistik Sekolah Binaan</p>
-         <v-breadcrumbs
-            :items="breadcrumb"
-            class="px-0 py-2"
-         >
-            <template #item="{item}">
-               <v-breadcrumbs-item
-                  exact
-                  :to="item.href"
-                  :disabled="item.disabled"
-               >{{ item.text }}</v-breadcrumbs-item>
-            </template>
-         </v-breadcrumbs>
+         <app-breadcrumb/>
       </div>
       <v-row dense>
          <v-col cols="12">
@@ -26,6 +15,12 @@
                   <schools-table
                      :headers="headers"
                      :items="data.data"
+                     :current-page="data.current_page"
+                     :from="data.from"
+                     :to="data.to"
+                     :total="data.total"
+                     :total-page="data.last_page"
+                     :loading="loading"
                   />
                </v-card-text>
             </v-card>
@@ -36,11 +31,7 @@
 </template>
 
 <script>
-import schoolsTable from '@/pages/components/schoolsTable'
-
 export default {
-   components: { schoolsTable },
-
    data() {
       return {
          user: this.$auth.user,
@@ -67,21 +58,26 @@ export default {
             },
             {
                text: 'Aksi',
+               sortable: false,
                value: 'actions'
             }
          ],
          data: [],
+         loading: false,
       }
    },
 
-   computed: {
-      breadcrumb() {
-         const data = [
-            {text: 'Dashboard', disabled: false, href: '/'},
-            {text: 'Statistik Sekolah Binaan', disabled: true, href: '/school'}
-         ]
-         return data
+   head() {
+      return {
+         title: 'Statistik Sekolah Binaan'
       }
+   },
+
+   created() {
+      this.$store.dispatch('setBreadcrumb', [
+         { text: 'Dashboard', disabled: false, href: '/' },
+         { text: 'Statistik Sekolah Binaan', disabled: true, href: '/school' }
+      ])
    },
 
    async mounted() {
@@ -90,8 +86,19 @@ export default {
 
    methods: {
       async getSchools() {
+         this.loading = true
          await this.$axios.get(`/supervisor/getPaginatedSchoolBySupervisor/${this.user.id}`).then((resp) => {
             this.data = resp.data.data
+         }).catch((e) => {
+            this.$store.dispatch('setAlert', {
+               type: 'error',
+               color: 'red darken-1',
+               icon: 'mdi-alert',
+               message: e
+            })
+            this.$store.dispatch('showAlert')
+         }).finally(() => {
+            this.loading = false
          })
       }
    }
