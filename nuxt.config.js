@@ -109,4 +109,8 @@ export default {
   env: {
     DIKNAS_ONLINE_API_URL: 'http://diknas-online-api.test'
   },
+
+  server: {
+    port: 4000
+  }
 }
