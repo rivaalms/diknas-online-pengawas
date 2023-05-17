@@ -12,23 +12,6 @@
                   Data Statistik Sekolah Binaan
                </v-card-title>
                <v-card-text>
-                  <div class="d-flex align-center">
-                     <div class="me-2">
-                        <p class="mb-0 text-subtitle-2">Filter:</p>
-                     </div>
-                     <v-col cols="6" md="2">
-                        <v-select
-                           v-model="year"
-                           :items="yearList"
-                           item-text="year"
-                           item-value="year"
-                           label="Tahun ajaran"
-                           hide-details="auto"
-                           class="pt-0 mt-0"
-                           @input="getSchools(year)"
-                        ></v-select>
-                     </v-col>
-                  </div>
                   <schools-table
                      :headers="headers"
                      :items="data.data"
@@ -38,6 +21,7 @@
                      :total="data.total"
                      :total-page="data.last_page"
                      :loading="loading"
+                     @data-handler="(current, schoolId, year) => getSchools(current, schoolId, year)"
                   />
                </v-card-text>
             </v-card>
@@ -101,14 +85,16 @@ export default {
 
    async mounted() {
       await this.getSchools()
-      await this.getYearList()
+      // await this.getYearList()
    },
 
    methods: {
-      async getSchools(year) {
+      async getSchools(current, schoolId, year) {
          this.loading = true
          await this.$axios.get(`/supervisor/getPaginatedSchoolBySupervisor/${this.$auth.user.id}`, {
             params: {
+               page: current,
+               school: schoolId,
                year: year ?? ''
             }
          }).then((resp) => {
@@ -126,12 +112,12 @@ export default {
          })
       },
 
-      async getYearList() {
-         await this.$axios.get(`/supervisor/getStudentsYear/${this.$auth.user.id}`).then((resp) => {
-            this.yearList = resp.data.data
-            this.year = this.yearList[0]
-         })
-      }
+      // async getYearList() {
+      //    await this.$axios.get(`/supervisor/getStudentsYear/${this.$auth.user.id}`).then((resp) => {
+      //       this.yearList = resp.data.data
+      //       this.year = this.yearList[0]
+      //    })
+      // }
    }
 }
 </script>
