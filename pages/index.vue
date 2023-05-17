@@ -20,7 +20,7 @@
                      :to="data.to"
                      :total="data.total"
                      :loading="loading"
-                     @data-handler="(current, status_id, school_id) => dataHandler(current, status_id, school_id)"
+                     @data-handler="(current, status_id, school_id, year) => dataHandler(current, status_id, school_id, year)"
                   />
                </v-card-text>
             </v-card>
@@ -95,15 +95,16 @@ export default {
    },
 
    methods: {
-      dataHandler(current, statusId, schoolId, categoryId, dataTypeId) {
+      dataHandler(current, statusId, schoolId, year) {
          this.loading = true
          this.$axios.get(`/supervisor/getData/${this.user.id}`, {
             params: {
                page: current,
                status: statusId,
                school: schoolId,
-               category: categoryId,
-               data_type: categoryId ? dataTypeId : null,
+               year,
+               // category: categoryId,
+               // data_type: categoryId ? dataTypeId : null,
             }
          }).then((resp) => {
             this.data = resp.data.data
