@@ -21,7 +21,7 @@
             <span>Tutup</span>
          </v-tooltip>
       </v-card-title>
-      
+
          <v-card-text>
             Anda yakin ingin memverifikasi data <code>{{ dialog ? dialog.targetItem.id : '' }}</code>?
          </v-card-text>
@@ -122,6 +122,7 @@ export default {
       },
       
       closeDialog() {
+         this.$refs.revisionNotesText.reset()
          this.$store.dispatch('closeDialog')
       }
    },
