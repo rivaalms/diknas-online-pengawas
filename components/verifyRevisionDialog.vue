@@ -5,7 +5,23 @@
    persistent
 >
       <v-card v-if="dialog && dialog.type === 'verify'">
-         <v-card-title>Verifikasi data?</v-card-title>
+         <v-card-title class="justify-space-between">
+         <span class="text-subtitle-1">{{ dialog ? dialog.title : '' }}</span>
+         <v-tooltip left color="black">
+            <template #activator="{on, attrs}">
+               <v-btn
+                  v-bind="attrs"
+                  icon
+                  v-on="on"
+                  @click="closeDialog()"
+               >
+                  <v-icon>mdi-window-close</v-icon>
+               </v-btn>
+            </template>
+            <span>Tutup</span>
+         </v-tooltip>
+      </v-card-title>
+      
          <v-card-text>
             Anda yakin ingin memverifikasi data <code>{{ dialog ? dialog.targetItem.id : '' }}</code>?
          </v-card-text>

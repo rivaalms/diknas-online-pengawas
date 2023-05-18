@@ -5,14 +5,14 @@
 >
    <v-card>
       <v-card-title class="justify-space-between">
-         {{ dialog.title ?? '' }}
+         <span class="text-subtitle-1">{{ dialog ? dialog.title : '' }}</span>
          <v-tooltip left color="black">
             <template #activator="{on, attrs}">
                <v-btn
                   v-bind="attrs"
                   icon
                   v-on="on"
-                  @click.stop="closeDialog()"
+                  @click="closeDialog()"
                >
                   <v-icon>mdi-window-close</v-icon>
                </v-btn>
