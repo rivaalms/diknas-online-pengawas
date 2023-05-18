@@ -1,13 +1,13 @@
 <template>
 <v-alert
    :type="alert.type"
-   :color="alert.color"
    :icon="alert.icon"
    dismissible
-   text
+   prominent
+   border="left"
    transition="fade-transition"
    :value="alertTrigger"
-   >
+>
    <span id="alertMessage"></span>
 </v-alert>
 </template>
@@ -25,7 +25,6 @@ export default {
             if (this.alert.message) {
                document.getElementById('alertMessage').innerHTML = this.alert.message
             }
-            
             setTimeout(() => {
                this.$store.dispatch('clearAlert')
             }, 5000)
