@@ -11,7 +11,7 @@
          </v-card-text>
          <v-card-text class="d-flex justify-end">
             <v-btn class="me-2" text @click="closeDialog">Batal</v-btn>
-            <v-btn color="green darken-2" depressed class="white--text" @click.stop="verifyData">Verifikasi Data</v-btn>
+            <v-btn color="success" depressed class="white--text" @click.stop="verifyData">Verifikasi Data</v-btn>
          </v-card-text>
       </v-card>
 
@@ -33,7 +33,7 @@
          </v-card-text>
          <v-card-text class="d-flex justify-end">
             <v-btn class="me-2" text @click="closeDialog">Batal</v-btn>
-            <v-btn color="deep-orange darken-1" depressed class="white--text" @click.stop="revisionData">Kembalikan Data</v-btn>
+            <v-btn color="warning" depressed class="white--text" @click.stop="revisionData">Kembalikan Data</v-btn>
          </v-card-text>
       </v-card>
 
@@ -64,14 +64,12 @@ export default {
          await this.$axios.post(`/supervisor/verifyData`, this.dialog.targetItem).then(() => {
             this.$store.dispatch('setAlert', {
                type: 'success',
-               color: 'green darken-2',
                icon: 'mdi-check',
                message: `Data dengan ID <code>${this.dialog.targetItem.id}</code> berhasil diverifikasi`
             })
          }).catch((e) => {
             this.$store.dispatch('setAlert', {
                type: 'error',
-               color: 'red darken-2',
                icon: 'mdi-alert',
                message: e
             })
@@ -89,15 +87,13 @@ export default {
             this.targetItem.revision_notes = this.revisionNotes
             await this.$axios.post(`/supervisor/revisionData`, this.targetItem).then(() => {
                this.$store.dispatch('setAlert', {
-                  type: 'success',
-                  color: 'deep-orange darken-1',
+                  type: 'warning',
                   icon: 'mdi-alert',
                   message: `Data dengan ID <code>${this.targetItem.id}</code> berhasil dikembalikan untuk direvisi`
                })
             }).catch((e) => {
                this.$store.dispatch('setAlert', {
                   type: 'error',
-                  color: 'red darken-1',
                   icon: 'mdi-alert',
                   message: e
                })

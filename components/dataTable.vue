@@ -89,7 +89,7 @@
                   v-bind="attrs"
                   icon
                   class="me-2"
-                  color="light-blue darken-2"
+                  color="primary"
                   v-on="on"
                   @click="downloadFile(item)"
                >
@@ -106,7 +106,7 @@
                   icon
                   :disabled="(item.data_status_id === 2) ? true : false"
                   class="me-2"
-                  color="green darken-2"
+                  color="success"
                   v-on="on"
                   @click.stop="dialog(item, 'verify')"
                >
@@ -123,7 +123,7 @@
                   icon
                   :disabled="(item.data_status_id === 2 || item.data_status_id === 3) ? true : false"
                   class="me-2"
-                  color="deep-orange darken-1"
+                  color="warning"
                   v-on="on"
                   @click.stop="dialog(item, 'revision')"
                >
@@ -253,10 +253,10 @@ export default {
       },
 
       getColor(status) {
-         if (status === 1) return "grey lighten-4"
-         if (status === 2) return "green darken-1 white--text"
-         if (status === 3) return "deep-orange darken-1 white--text"
-         if (status === 4) return "cyan lighten-1 white--text"
+         if (status === 1) return "secondary"
+         if (status === 2) return "success"
+         if (status === 3) return "warning"
+         if (status === 4) return "info"
       },
 
       getFileExtension(name) {
@@ -288,13 +288,13 @@ export default {
                document.body.removeChild(link)
 
                this.$store.dispatch('setSnackbar', {
-                  color: 'green darken-3',
+                  color: 'success',
                   text: 'File berhasil diunduh'
                })
             })
          } catch (e) {
             this.$store.dispatch('setSnackbar', {
-               color: 'red darken-2',
+               color: 'error',
                text: 'File tidak ditemukan'
             })
          } finally {

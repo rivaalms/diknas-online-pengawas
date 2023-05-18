@@ -56,7 +56,7 @@
                   v-bind="attrs"
                   icon
                   class="me-2"
-                  color="cyan"
+                  color="info"
                   v-on="on"
                   @click="dialog(item)"
                >

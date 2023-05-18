@@ -102,7 +102,6 @@ export default {
          }).catch((e) => {
             this.$store.dispatch('setAlert', {
                type: 'error',
-               color: 'red darken-1',
                icon: 'mdi-alert',
                message: e
             })
