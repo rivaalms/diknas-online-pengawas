@@ -1,11 +1,12 @@
 <template>
    <div id="container">
       <v-row dense>
-         <v-col cols="6" class="bg-primary d-flex flex-column justify-center" align-self="stretch">
+         <v-col cols="4" class="bg-primary d-flex flex-column justify-center" align-self="stretch">
             <v-container class="mw-75 mb-12 pb-12">
                <div class="d-flex justify-center mb-6">
                   <p class="text-h4 white--text font-weight-bold">{{ project_name }}</p>
                </div>
+               <app-alert/>
                <v-card flat color="transparent">
                   <v-card-text>
                      <v-form ref="form" @submit.prevent="onSubmit">
@@ -17,6 +18,7 @@
                            label="NIP"
                            required
                            @keypress="numberOnly"
+                           @focus="resetValidation"
                         ></v-text-field>
                   
                         <v-text-field
@@ -26,6 +28,7 @@
                            label="Password"
                            type="password"
                            required
+                           @focus="resetValidation"
                         ></v-text-field>
                         <div class="d-flex justify-end">
                            <v-btn depressed type="submit" color="yellow accent-4" class="mt-5">Login</v-btn>
@@ -36,7 +39,7 @@
                </v-card>
             </v-container>
          </v-col>
-         <v-col cols="6" class="d-flex flex-column justify-center align-center bg-light" align-self="stretch">
+         <v-col cols="8" class="d-flex flex-column justify-center align-center bg-light" align-self="stretch">
             <v-img
                width="75%"
                contain
@@ -78,8 +81,16 @@ export default {
                }
             }).then((resp) => {
                this.SET_IS_AUTH(true)
+               this.$store.dispatch('clearAlert')
                this.$router.push('/')
-            }).catch((error) => { return error })
+            }).catch(() => { 
+               this.$store.dispatch('setAlert', {
+                  type: 'error',
+                  icon: 'mdi-alert-outline',
+                  message: 'NIP atau kata sandi yang Anda masukkan tidak cocok dengan kredensial kami'
+               })
+               this.$store.dispatch('showAlert')
+            })
          }
       },
 
@@ -92,6 +103,10 @@ export default {
             return true;
          }
       },
+
+      resetValidation() {
+         this.$refs.form.resetValidation()
+      }
    }
 }
 </script>
@@ -106,11 +121,11 @@ export default {
 }
 
 .bg-primary {
-   background-color: #26A69A;
+   background-color: #2979FF;
 }
 
 .bg-light {
-   background-color: #f5f5f5;
+   background-color: #f8f9fa;
 }
 
 .mw-75 {
@@ -118,7 +133,7 @@ export default {
 }
 
 .v-application .error--text {
-   color: #FFCDD2!important;
-   caret-color: #FFCDD2!important;
+   color: #D50000!important;
+   caret-color: #D50000!important;
 }
 </style>
