@@ -65,7 +65,7 @@ export default {
          ],
          data: [],
          loading: false,
-         year: null,
+         currentYear: (new Date().getMonth() < 5) ? ((new Date().getFullYear()-1) + '-' + new Date().getFullYear()) : (new Date().getFullYear() + '-' + (new Date().getFullYear()+1)),
          yearList: []
       }
    },
@@ -85,17 +85,18 @@ export default {
 
    async mounted() {
       await this.getSchools()
+      console.log(this.currentYear)
       // await this.getYearList()
    },
 
    methods: {
       async getSchools(current, schoolId, year) {
          this.loading = true
-         await this.$axios.get(`/supervisor/getPaginatedSchoolBySupervisor/${this.$auth.user.id}`, {
+         await this.$axios.get(`/supervisor/getSchoolBySupervisor/${this.$auth.user.id}`, {
             params: {
                page: current,
                school: schoolId,
-               year: year ?? ''
+               year: year ?? this.currentYear
             }
          }).then((resp) => {
             this.data = resp.data.data

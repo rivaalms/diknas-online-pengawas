@@ -23,18 +23,15 @@
          ></v-autocomplete>
       </v-col>
       <v-col cols="3">
-         <v-text-field
+         <v-autocomplete
             v-model="year"
+            :items="yearList"
             label="Tahun ajaran"
-            clearable
-            append-icon="mdi-magnify"
             hide-details="auto"
             class="pt-0 mt-0"
             placeholder="Enter untuk mencari"
-            @keydown.enter="dataHandler()"
-            @click:clear="emptyYearDataHandler()"
-            @click:append="dataHandler()"
-         ></v-text-field>
+            @input="dataHandler()"
+         ></v-autocomplete>
       </v-col>
    </div>
    
@@ -132,6 +129,7 @@ export default {
          schoolFilterLoading: false,
          schoolInputSync: null,
          year: null,
+         yearList: [],
 
          teacherItems: []
       }
@@ -154,6 +152,17 @@ export default {
             this.schoolFilterLoading = false
          })
       },
+   },
+
+   async mounted() {
+      await this.$axios.get(`/supervisor/getStudentsYear/${this.$auth.user.id}`).then((resp) => {
+         const yearList = []
+         resp.data.data.forEach(item => {
+            yearList.push(item.year)
+         })
+         this.yearList = yearList
+         this.year = this.yearList[0]
+      })
    },
 
    methods: {

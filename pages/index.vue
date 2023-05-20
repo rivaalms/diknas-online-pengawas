@@ -85,10 +85,7 @@ export default {
    },
 
    async mounted() {
-      await this.$axios.get(`/supervisor/getData/${this.user.id}`).then((resp) => {
-         this.data = resp.data.data
-         this.loading = false
-      })
+      await this.dataHandler()
       await this.$axios.get(`/getCategories`).then((resp) => {
          this.categories = resp.data.data
       })
@@ -97,8 +94,9 @@ export default {
    methods: {
       dataHandler(current, statusId, schoolId, year) {
          this.loading = true
-         this.$axios.get(`/supervisor/getData/${this.user.id}`, {
+         this.$axios.get(`/supervisor/getData`, {
             params: {
+               supervisor: this.user.id,
                page: current,
                status: statusId,
                school: schoolId,

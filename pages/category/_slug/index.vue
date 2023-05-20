@@ -175,8 +175,9 @@ export default {
    methods: {
       dataHandler(current, statusId, schoolId, dataTypeId) {
          this.loading = true
-         this.$axios.get(`/supervisor/getData/${this.$auth.user.id}`, {
+         this.$axios.get(`/supervisor/getData`, {
             params: {
+               supervisor: this.$auth.user.id,
                page: current,
                status: statusId,
                school: schoolId,

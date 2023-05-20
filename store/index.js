@@ -18,7 +18,7 @@ export const state = () => ({
       {
          text: 'Kategori',
          sortable: false,
-         value: 'data_category.name',
+         value: 'data_type.data_category.name',
       },
       {
          text: 'Tahun ajaran',
