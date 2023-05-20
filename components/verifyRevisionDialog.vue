@@ -1,11 +1,11 @@
 <template>
 <v-dialog
    v-model="dialogTrigger"
-   max-width="500px"
+   :max-width="dialog.type === 'notes' ? '700' : '500'"
    persistent
 >
-      <v-card v-if="dialog && dialog.type === 'verify'">
-         <v-card-title class="justify-space-between">
+   <v-card>
+      <v-card-title class="justify-space-between">
          <span class="text-subtitle-1">{{ dialog ? dialog.title : '' }}</span>
          <v-tooltip left color="black">
             <template #activator="{on, attrs}">
@@ -21,38 +21,52 @@
             <span>Tutup</span>
          </v-tooltip>
       </v-card-title>
-
-         <v-card-text>
+      <v-card-text v-if="dialog && dialog.type === 'verify'">
+         <p>
             Anda yakin ingin memverifikasi data <code>{{ dialog ? dialog.targetItem.id : '' }}</code>?
-         </v-card-text>
-         <v-card-text class="d-flex justify-end">
+         </p>
+         <div class="d-flex justify-end">
             <v-btn class="me-2" text @click="closeDialog">Batal</v-btn>
             <v-btn color="success" depressed class="white--text" @click.stop="verifyData">Verifikasi Data</v-btn>
-         </v-card-text>
-      </v-card>
+         </div>
+      </v-card-text>
 
-      <v-card v-if="dialog && dialog.type === 'revision'">
-         <v-card-title>Kembalikan data untuk direvisi?</v-card-title>
-         <v-card-text>
-            <p>Anda yakin ingin mengembalikan data <code>{{ dialog ? dialog.targetItem.id : ''}}</code> untuk direvisi?</p>
-            <v-form
-               ref="revisionNotesText"
-               @submit.prevent="revisionData"
-            >
-               <v-textarea
-                  v-model="revisionNotes"
-                  auto-grow
-                  label="Catatan Revisi"
-                  :rules="textareaRules"
-               ></v-textarea>
-            </v-form>
-         </v-card-text>
-         <v-card-text class="d-flex justify-end">
+      <v-card-text v-else-if="dialog && dialog.type === 'revision'">
+         <p>Anda yakin ingin mengembalikan data <code>{{ dialog ? dialog.targetItem.id : ''}}</code> untuk direvisi?</p>
+         <v-form
+            ref="revisionNotesText"
+            @submit.prevent="revisionData"
+         >
+            <v-textarea
+               v-model="revisionNotes"
+               auto-grow
+               label="Catatan Revisi"
+               :rules="textareaRules"
+            ></v-textarea>
+         </v-form>
+         <div class="d-flex justify-end">
             <v-btn class="me-2" text @click="closeDialog">Batal</v-btn>
             <v-btn color="warning" depressed class="white--text" @click.stop="revisionData">Kembalikan Data</v-btn>
-         </v-card-text>
-      </v-card>
+         </div>
+      </v-card-text>
 
+      <v-card-text v-else-if="dialog && dialog.type === 'notes'">
+         <p>Catatan revisi data <code>{{ dialog.targetItem.id }}</code></p>
+         <v-card v-if="targetItem.length > 0" flat class="overflow-y-auto overflow-x-hidden" height="250">
+            <v-row dense>
+               <v-col v-for="item in targetItem" :key="item.id" cols="12">
+                  <v-card flat outlined>
+                     <v-card-title class="text-caption">{{ item.date }}</v-card-title>
+                     <v-card-text>{{ item.note }}</v-card-text>
+                  </v-card>
+               </v-col>
+            </v-row>
+         </v-card>
+         <v-alert v-else color="warning" outlined class="d-flex justify-center">
+            Tidak ada data
+         </v-alert>
+      </v-card-text>
+   </v-card>
 </v-dialog>
 </template>
 
@@ -62,7 +76,7 @@ export default {
    data() {
       return {
          revisionNotes: null,
-         targetItem: {},
+         targetItem: [],
       }
    },
 
@@ -71,6 +85,28 @@ export default {
 
       textareaRules() {
          return [v => !!v || 'Wajib diisi']
+      }
+   },
+
+   watch: {
+      dialog() {
+         if (this.dialog) {
+            if (this.dialog.targetItem.data_status_id === 3 || this.dialog.targetItem.data_status_id === 4) {
+               this.$axios.get('/getRevision', {
+                  params: {
+                     id: this.dialog.targetItem.id
+                  }
+               }).then((resp) => {
+                  this.targetItem = resp.data.data
+               })
+            }
+         }
+      }, 
+
+      dialogTrigger() {
+         if (!this.dialogTrigger) {
+            this.targetItem = []
+         }
       }
    },
 
@@ -122,7 +158,9 @@ export default {
       },
       
       closeDialog() {
-         this.$refs.revisionNotesText.reset()
+         if (this.dialog.type === 'revision') {
+            this.$refs.revisionNotesText.reset()
+         }
          this.$store.dispatch('closeDialog')
       }
    },

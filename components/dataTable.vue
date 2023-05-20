@@ -104,6 +104,23 @@
                <v-btn
                   v-bind="attrs"
                   icon
+                  :disabled="(item.data_status_id !== 4) ? (item.data_status_id !== 3) ? true : false : false"
+                  class="me-2"
+                  color="info"
+                  v-on="on"
+                  @click.stop="dialog(item, 'notes')"
+               >
+                  <v-icon>mdi-file-document-alert</v-icon>
+               </v-btn>
+            </template>
+            <span>Lihat catatan revisi</span>
+         </v-tooltip>
+
+         <v-tooltip top color="black">
+            <template #activator="{on, attrs}">
+               <v-btn
+                  v-bind="attrs"
+                  icon
                   :disabled="(item.data_status_id === 2) ? true : false"
                   class="me-2"
                   color="success"
@@ -303,9 +320,23 @@ export default {
       },
 
       dialog(item, type) {
+         let title = null
+         switch (type) {
+            case 'verify':
+               title = 'Verifikasi data?'
+               break
+            case 'revision':
+               title = 'Kembalikan data untuk direvisi?'
+               break
+            case 'notes':
+               title = 'Catatan Revisi'
+               break
+            default: break
+         }
+
          this.$store.dispatch('setDialog', {
             type,
-            title: type === 'verify' ? 'Verifikasi data?' : 'Kembalikan data untuk direvisi?',
+            title,
             targetItem: item
          })
          this.$store.dispatch('showDialog')
