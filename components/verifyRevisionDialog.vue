@@ -25,8 +25,8 @@
          <p>
             Anda yakin ingin memverifikasi data <code>{{ dialog ? dialog.targetItem.id : '' }}</code>?
          </p>
-         <div class="d-flex justify-end">
-            <v-btn class="me-2" text @click="closeDialog">Batal</v-btn>
+         <div class="d-flex justify-between justify-md-end">
+            <v-btn class="me-2 flex-grow-1 flex-md-grow-0" text @click="closeDialog">Batal</v-btn>
             <v-btn color="success" depressed class="white--text" @click.stop="verifyData">Verifikasi Data</v-btn>
          </div>
       </v-card-text>
@@ -44,8 +44,8 @@
                :rules="textareaRules"
             ></v-textarea>
          </v-form>
-         <div class="d-flex justify-end">
-            <v-btn class="me-2" text @click="closeDialog">Batal</v-btn>
+         <div class="d-flex justify-between justify-md-end">
+            <v-btn class="me-2 flex-grow-1 flex-md-grow-0" text @click="closeDialog">Batal</v-btn>
             <v-btn color="warning" depressed class="white--text" @click.stop="revisionData">Kembalikan Data</v-btn>
          </div>
       </v-card-text>
@@ -77,15 +77,16 @@ export default {
       return {
          revisionNotes: null,
          targetItem: [],
+         isMobile: false,
       }
    },
 
    computed: {
-      ...mapState(['dialog', 'dialogTrigger']),
+      ...mapState(['dialog', 'dialogTrigger', 'mobile']),
 
       textareaRules() {
          return [v => !!v || 'Wajib diisi']
-      }
+      },
    },
 
    watch: {
@@ -162,7 +163,7 @@ export default {
             this.$refs.revisionNotesText.reset()
          }
          this.$store.dispatch('closeDialog')
-      }
+      },
    },
 }
 </script>

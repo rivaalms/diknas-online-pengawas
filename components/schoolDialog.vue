@@ -37,29 +37,29 @@
             <v-tab-item class="py-4 px-1">
                <v-row>
                   <v-col cols="12" md="3">
-                     <v-card>
+                     <v-card flat outlined>
                         <v-card-text>
                            <p class="mb-2">Jumlah Siswa</p>
-                           <p class="text-h4 font-weight-medium grey--text text--darken-4">{{ dialog.item ? dialog.item.total_students : ''}}</p>
+                           <p class="text-h4 font-weight-medium grey--text text--darken-3">{{ dialog.item ? dialog.item.total_students : ''}}</p>
                         </v-card-text>
                      </v-card>
                   </v-col>
                   <template v-if="dialog.item">
                      <v-col v-for="students in dialog.item.students" :key="students.grade" cols="12" md="3">
-                        <v-card>
+                        <v-card flat outlined>
                            <v-card-text>
                               <p class="mb-2">Kelas {{ students.grade }}</p>
-                              <p class="text-h4 font-weight-medium grey--text text--darken-4">{{ students.total }}</p>
+                              <p class="text-h4 font-weight-medium grey--text text--darken-3">{{ students.total }}</p>
                            </v-card-text>
                         </v-card>
                      </v-col>
                   </template>
                   <v-col cols="12" class="mt-6">
-                     <p class="text-h6">Data Siswa Berdasarkan Agama</p>
+                     <p class="text-subtitle-1">Data Siswa Berdasarkan Agama</p>
                      <v-data-table
                         hide-default-footer
                         :headers="studentHeaders"
-                        :items="dialog.item ? dialog.students : []"
+                        :items="dialog.item ? dialog.item.students : []"
                      >
                         <!-- eslint-disable-next-line vue/valid-v-slot -->
                         <template #item.grade="{item}">

@@ -4,11 +4,11 @@
    <app-alert/>
 
    <!-- //SECTION - Status Filter & New Data Btn -->
-   <div class="d-flex align-center flex-wrap">
+   <div class="d-flex flex-column flex-md-row align-md-center flex-wrap">
       <div class="me-2">
          <p class="mb-0 text-subtitle-2">Filter:</p>
       </div>
-      <v-col cols="6" md="3">
+      <v-col cols="12" md="3">
          <v-autocomplete
             v-model="schoolId"
             :items="schools"
@@ -27,7 +27,7 @@
          ></v-autocomplete>
       </v-col>
 
-      <v-col cols="6" md="3">
+      <v-col cols="12" md="3">
          <v-select
             v-model="statusId"
             :items="status"
@@ -41,7 +41,7 @@
          ></v-select>
       </v-col>
 
-      <v-col cols="3">
+      <v-col cols="12" md="3">
          <v-text-field
             v-model="year"
             label="Tahun ajaran"
@@ -155,7 +155,7 @@
    <!-- //!SECTION -->
 
    <!-- //SECTION - Table footer & Pagination -->
-   <div v-if="items" class="d-flex justify-space-between align-center">
+   <div v-if="items" class="d-flex flex-column flex-md-row justify-space-between align-center">
       <p class="text-caption mb-0">
          {{ from }}-{{ to }} dari {{ total }} data
       </p>
@@ -239,9 +239,9 @@ export default {
          if (this.schools.length > 0) return
          if (this.schoolFilterLoading) return
          this.schoolFilterLoading = true
-         this.$axios.get(`/supervisor/getSchoolBySupervisor/${this.$auth.user.id}`, {
+         this.$axios.get(`/searchSchoolFilter`, {
             params: {
-               school: this.schoolId
+               supervisor: this.$auth.user.id
             }
          }).then((resp) => {
             this.schools = resp.data.data

@@ -7,9 +7,8 @@
    clipped-left
    class="app-bar"
 >
-   <v-list dense class="pa-0" color="transparent">
-      <v-toolbar-title class="text-h6">diknas-online-pengawas</v-toolbar-title>
-   </v-list>
+   <v-app-bar-nav-icon class="d-block d-md-none" @click="$emit('toggle-sidebar')"></v-app-bar-nav-icon>
+   <v-app-bar-title class="d-none d-md-block text-h6">diknas-online-pengawas</v-app-bar-title>
 
    <v-spacer/>
 
