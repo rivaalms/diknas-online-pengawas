@@ -25,13 +25,13 @@
                            v-model="password"
                            dark
                            :rules="rules"
-                           label="Password"
+                           label="Kata Sandi"
                            type="password"
                            required
                            @focus="resetValidation"
                         ></v-text-field>
                         <div class="d-flex justify-end">
-                           <v-btn depressed type="submit" color="yellow accent-4" class="mt-5">Login</v-btn>
+                           <v-btn depressed type="submit" :loading="loading" color="yellow accent-4" class="mt-5">Login</v-btn>
                         </div>
                      </v-form>
                   </v-card-text>
@@ -61,6 +61,7 @@ export default {
       return {
          nip: '',
          password: '',
+         loading: false,
          
          rules: [
          v => !!v || 'Wajib diisi',
@@ -74,6 +75,7 @@ export default {
 
       async onSubmit() {
          if (this.$refs.form.validate()) {
+            this.loading = true
             await this.$auth.loginWith('local', {
                data: {
                   nip: this.nip,
@@ -90,6 +92,8 @@ export default {
                   message: 'NIP atau kata sandi yang Anda masukkan tidak cocok dengan kredensial kami'
                })
                this.$store.dispatch('showAlert')
+            }).finally(() => {
+               this.loading = false
             })
          }
       },
@@ -115,6 +119,7 @@ export default {
 #container {
    min-height: 100%!important;
    padding: 0;
+   overflow: hidden;
    display: flex;
    justify-content: center;
    align-items: stretch;
