@@ -79,7 +79,7 @@
    </div>
    <!-- //!SECTION -->
 
-   <lazy-school-dialog/>
+   <lazy-app-dialog/>
 </div>
 </template>
 

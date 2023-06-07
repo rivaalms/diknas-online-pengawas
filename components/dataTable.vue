@@ -170,7 +170,7 @@
    </div>
    <!-- //!SECTION -->
 
-   <lazy-verify-revision-dialog
+   <lazy-app-dialog
       @submit="dataHandler()"
    />
 
@@ -337,7 +337,7 @@ export default {
          this.$store.dispatch('setDialog', {
             type,
             title,
-            targetItem: item
+            data: item
          })
          this.$store.dispatch('showDialog')
       },
