@@ -51,6 +51,12 @@ export default {
   auth: {
     strategies: {
       local: {
+        cookie: {
+          prefix: 'auth.supervisor.'
+        },
+        localStorage: {
+          prefix: 'auth.supervisor.'
+        },
         endpoints: {
           login: { url: '/supervisor/login', method: 'post', propertyName: 'data' },
           logout: { url: '/supervisor/logout', method: 'post' },
