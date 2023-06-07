@@ -123,6 +123,9 @@ export default {
    mounted() {
       this.fetchCategories()
       this.checkIsMobile()
+      if (!this.isMobile) {
+         this.drawer = true
+      }
    },
 
    methods: {
