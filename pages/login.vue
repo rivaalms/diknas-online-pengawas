@@ -16,6 +16,7 @@
                            dark
                            :rules="rules"
                            label="NIP"
+                           placeholder="Hanya angka"
                            required
                            @keypress="numberOnly"
                            @focus="resetValidation"
