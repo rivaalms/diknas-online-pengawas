@@ -113,6 +113,9 @@
          </v-card-text>
       </v-card>
    </v-dialog>
+
+   <lazy-app-dialog/>
+   
 </v-container>
 </template>
 
@@ -234,10 +237,12 @@ export default {
          this.dialogTrigger = false
       },
 
-      async logout() {
-         await this.$auth.logout()
-         this.SET_IS_AUTH(false)
-         this.$router.push('/login')
+      logout() {
+         this.$store.dispatch('setDialog', {
+            type: 'logout',
+            title: 'Keluar?'
+         })
+         this.$store.dispatch('showDialog')
       },
 
       // TODO - 

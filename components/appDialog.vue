@@ -6,7 +6,7 @@
 >
    <v-card>
       <v-card-title class="justify-space-between">
-         <span class="text-subtitle-1">{{ dialog ? dialog.title : '' }}</span>
+         <span class="text-subtitle-1 font-weight-medium">{{ dialog ? dialog.title : '' }}</span>
          <v-tooltip
             left
             color="black"
@@ -50,6 +50,11 @@
          :data="dialog.data"
       />
 
+      <lazy-logout-dialog
+         v-if="dialog && dialog.type === 'logout'"
+         @close="closeDialog"
+      />
+      
    </v-card>
 </v-dialog>
 </template>
@@ -74,6 +79,7 @@ export default {
             switch (this.dialog.type) {
                case 'verify':
                case 'revision':
+               case 'logout':
                   this.width = 500
                   break
                case 'notes':
